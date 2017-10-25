@@ -40,19 +40,15 @@ public class PravegaInputSplit extends InputSplit implements Writable {
     }
 
     public PravegaInputSplit(Segment segment, long startOffset, long endOffset) {
-		this.segment = segment;
-		this.startOffset = startOffset;
-		this.endOffset = endOffset;
-    }
-
-    public PravegaInputSplit(Segment segment) {
-		this.segment = segment;
+        this.segment = segment;
+        this.startOffset = startOffset;
+        this.endOffset = endOffset;
     }
 
     public void readFields(DataInput in) throws IOException {
-		segment = Segment.fromScopedName(Text.readString(in));
-		startOffset = in.readLong();
-		endOffset = in.readLong();
+        segment = Segment.fromScopedName(Text.readString(in));
+        startOffset = in.readLong();
+        endOffset = in.readLong();
     }
 
     public void write(DataOutput out) throws IOException {
@@ -61,21 +57,21 @@ public class PravegaInputSplit extends InputSplit implements Writable {
         out.writeLong(endOffset);
     }
 
-	public Segment getSegment() {
-		return segment;
-	}
+    public Segment getSegment() {
+        return segment;
+    }
 
-	public long getStartOffset() {
-		return startOffset;
-	}
+    public long getStartOffset() {
+        return startOffset;
+    }
 
-	public long getEndOffset() {
-		return endOffset;
-	}
+    public long getEndOffset() {
+        return endOffset;
+    }
 
     @Override
     public long getLength() throws IOException, InterruptedException {
-        return Long.MAX_VALUE;
+        return endOffset-startOffset;
     }
 
     @Override
@@ -83,7 +79,7 @@ public class PravegaInputSplit extends InputSplit implements Writable {
         return new String[] {};
     }
 
-	@Override
+    @Override
     public String toString() {
         return String.format("%s:%s:%s", segment.getScopedName(), String.valueOf(getStartOffset()), String.valueOf(getEndOffset()));
     }

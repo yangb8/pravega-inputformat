@@ -30,7 +30,7 @@ public class MetadataWritable implements Writable {
 
     private PravegaInputSplit split;
     private long offset;
-	// place holder
+    // place holder
     private Long timestamp;
 
     /**

@@ -27,25 +27,25 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 
-//public class TokenizerMapper extends Mapper<Object, String, Text, IntWritable> {
-public class TokenizerMapper extends Mapper<Object, Students, Text, IntWritable> {
+public class TokenizerMapper extends Mapper<Object, String, Text, IntWritable> {
+//public class TokenizerMapper extends Mapper<Object, Students, Text, IntWritable> {
 //public class TokenizerMapper extends Mapper<Object, byte[], Text, IntWritable> {
 
-	private static final IntWritable ONE = new IntWritable(1);
-	private Text word = new Text();
+    private static final IntWritable ONE = new IntWritable(1);
+    private Text word = new Text();
 
-	@Override
-	//protected void map(Object key, String value, Context context)
-	protected void map(Object key, Students value, Context context)
-	//protected void map(Object key, byte[] value, Context context)
-			throws IOException, InterruptedException {
+    @Override
+    protected void map(Object key, String value, Context context)
+    //protected void map(Object key, Students value, Context context)
+    //protected void map(Object key, byte[] value, Context context)
+            throws IOException, InterruptedException {
 
         System.out.println("####: "+value);
-		StringTokenizer tokenizer = new StringTokenizer(value.toString());
-		while (tokenizer.hasMoreTokens()) {
-			String token = tokenizer.nextToken();
-			word.set(token);
-			context.write(word, ONE);
-		}
-	}
+        StringTokenizer tokenizer = new StringTokenizer(value.toString());
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken();
+            word.set(token);
+            context.write(word, ONE);
+        }
+    }
 }

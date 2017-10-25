@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.pravega</groupId>
-    <artifactId>hadoop</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>hadoop-input</artifactId>
+    <version>0.0.1</version>
     <packaging>jar</packaging>
 
     <name>hadoop</name>
@@ -44,7 +44,6 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 
@@ -77,16 +76,11 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.5</version>
         </dependency>
-		<dependency>
+
+        <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
             <version>4.0.0</version>
-        </dependency>
-
-		<dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20160810</version>
         </dependency>
 
     </dependencies>

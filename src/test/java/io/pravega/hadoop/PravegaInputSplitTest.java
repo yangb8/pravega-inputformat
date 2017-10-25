@@ -46,7 +46,7 @@ public class PravegaInputSplitTest {
 
     @Before
     public void setUp() {
-		segment = new Segment(scope, stream, 10);
+        segment = new Segment(scope, stream, 10);
         split = new PravegaInputSplit(segment, 1, 100);
     }
 
@@ -55,17 +55,17 @@ public class PravegaInputSplitTest {
         Assert.assertEquals(1, split.getStartOffset());
         Assert.assertEquals(100, split.getEndOffset());
         Assert.assertEquals(segment, split.getSegment());
-	}
+    }
 
     @Test
     public void testPravegaInputSplitWritable() throws IOException {
         ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
         DataOutput out = new DataOutputStream(byteOutput);
-		split.write(out);
+        split.write(out);
         DataInput in = new DataInputStream(new ByteArrayInputStream(byteOutput.toByteArray()));
-		PravegaInputSplit inSplit = new PravegaInputSplit();
+        PravegaInputSplit inSplit = new PravegaInputSplit();
         inSplit.readFields(in);
-		byteOutput.close();
+        byteOutput.close();
 
         Assert.assertEquals(0, split.getSegment().compareTo(inSplit.getSegment()));
         Assert.assertEquals(split.getStartOffset(), inSplit.getStartOffset());

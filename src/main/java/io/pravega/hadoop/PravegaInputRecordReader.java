@@ -37,14 +37,15 @@ import java.net.URI;
 import java.util.Iterator;
 
 
-//public class PravegaInputRecordReader<V extends Serializable> extends RecordReader<MetadataWritable, V> {
 public class PravegaInputRecordReader<V> extends RecordReader<MetadataWritable, V> {
 
-	private Serializer<V> deserializer;
+    private ClientFactory clientFactory;
+    private BatchClient batchClient;
     private PravegaInputSplit split;
     private SegmentIterator<V> iterator;
-	private ClientFactory clientFactory;
-    private BatchClient batchClient;
+    private Serializer<V> deserializer;
+    private boolean debug;
+
     private MetadataWritable key;
     private V value;
 
@@ -54,32 +55,34 @@ public class PravegaInputRecordReader<V> extends RecordReader<MetadataWritable, 
     }
 
     public void initialize(InputSplit split, Configuration conf) throws IOException, InterruptedException {
+        debug = conf.getBoolean(PravegaInputFormat.DEBUG, false);
         this.split = (PravegaInputSplit) split;
         clientFactory = ClientFactory.withScope(conf.getRaw(PravegaInputFormat.SCOPE_NAME), URI.create(conf.getRaw(PravegaInputFormat.URI_STRING)));
         batchClient = clientFactory.createBatchClient();
-		// create deserializer from user input, assign default one (JavaSerializer) if none
-		String deserializerClassName = conf.getRaw(PravegaInputFormat.DESERIALIZER);
-		if (deserializerClassName == null) {
-			deserializer = new JavaSerializer();
-		} else {
-		    try{
-		        Class<?> clazz = Class.forName(deserializerClassName);
-		        deserializer = (Serializer<V>) clazz.newInstance();
-		    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-			    e.printStackTrace();
-			    throw new InterruptedException();
-		    }
-		}
-		iterator = batchClient.readSegment(this.split.getSegment(), deserializer);
+        // create deserializer from user input, assign default one (JavaSerializer) if none
+        String deserializerClassName = conf.getRaw(PravegaInputFormat.DESERIALIZER);
+        if (deserializerClassName == null) {
+            deserializer = new JavaSerializer();
+        } else {
+            try{
+                Class<?> clazz = Class.forName(deserializerClassName);
+                deserializer = (Serializer<V>) clazz.newInstance();
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+                throw new InterruptedException();
+            }
+        }
+        iterator = batchClient.readSegment(this.split.getSegment(), deserializer);
     }
 
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
         if (iterator.hasNext()) {
-			value = iterator.next();
-			System.out.println("EVENT TYPE: "+value.getClass().getName());
-			System.out.println("EVENT VAL : "+value);
+            value = iterator.next();
             key = new MetadataWritable(split, iterator.getOffset());
+            if (debug) {
+                System.out.format("Key: %s, Value: %s (%s) %n", key, value, value.getClass().getName());
+            }
             return true;
         }
         return false;
@@ -97,7 +100,10 @@ public class PravegaInputRecordReader<V> extends RecordReader<MetadataWritable, 
 
     @Override
     public float getProgress() throws IOException, InterruptedException {
-		return 0; // Can't be accurate because we don't know the start/end offsets in most cases
+        if (key != null && split.getLength() > 0) {
+            return ((float)(key.getOffset() - split.getStartOffset()))/split.getLength();
+        }
+        return 0;
     }
 
     @Override

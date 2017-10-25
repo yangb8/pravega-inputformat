@@ -38,7 +38,7 @@ import org.junit.Assert;
 
 public class MetadataWritableTest {
 
-	private static final String scope = "scope";
+    private static final String scope = "scope";
     private static final String stream = "stream";
     private Segment segment;
     private PravegaInputSplit split;
@@ -48,7 +48,7 @@ public class MetadataWritableTest {
     public void setUp() {
         segment = new Segment(scope, stream, 10);
         split = new PravegaInputSplit(segment, 1, 100);
-		key = new MetadataWritable(split, 5L);
+        key = new MetadataWritable(split, 5L);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class MetadataWritableTest {
         Assert.assertEquals(Long.valueOf(0), key.getTimestamp());
     }
 
-	@Test
+    @Test
     public void testMetadataWritableWritable() throws IOException {
         ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
         DataOutput out = new DataOutputStream(byteOutput);

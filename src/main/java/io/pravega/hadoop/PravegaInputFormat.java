@@ -41,36 +41,28 @@ public class PravegaInputFormat<V extends Serializable> extends InputFormat<Meta
     public static final String SCOPE_NAME  = "pravega.scope";
     public static final String STREAM_NAME = "pravega.stream";
     public static final String URI_STRING  = "pravega.uri";
-    public static final String START_TIME  = "pravega.starttime";
-    public static final String END_TIME    = "pravega.endtime";
     public static final String DESERIALIZER= "pravega.deserializer";
+    public static final String DEBUG       = "pravega.debug";
 
     @Override
     public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {
-		Configuration conf = context.getConfiguration();
+        Configuration conf = context.getConfiguration();
         List<InputSplit> splits = new ArrayList<InputSplit>();
 
-		final String scopeName = conf.getRaw(PravegaInputFormat.SCOPE_NAME);
-		final String streamName = conf.getRaw(PravegaInputFormat.STREAM_NAME);
+        final String scopeName = conf.getRaw(PravegaInputFormat.SCOPE_NAME);
+        final String streamName = conf.getRaw(PravegaInputFormat.STREAM_NAME);
         final URI controllerURI = URI.create(conf.getRaw(PravegaInputFormat.URI_STRING));
-		final Date startTime = new Date(conf.getLong(PravegaInputFormat.START_TIME, 0L));
-		final Date endTime = new Date(conf.getLong(PravegaInputFormat.END_TIME, Long.MAX_VALUE));
         try (ClientFactory clientFactory = ClientFactory.withScope(scopeName, controllerURI)) {
             BatchClient batchClient = clientFactory.createBatchClient();
 
-			PravegaInputSplit split = new PravegaInputSplit(new Segment(scopeName, streamName, 0));
-			splits.add(split);
-			split = new PravegaInputSplit(new Segment(scopeName, streamName, 0));
-			splits.add(split);
-			/*
-		    for (Iterator<SegmentInfo> iter = batchClient.listSegments(new StreamImpl(scopeName, streamName), startTime, endTime); iter.hasNext(); ) {
-				Segment segment = iter.next().getSegment();
-                PravegaInputSplit split = new PravegaInputSplit(segment);
+            for (Iterator<SegmentInfo> iter = batchClient.listSegments(new StreamImpl(scopeName, streamName)); iter.hasNext(); ) {
+                SegmentInfo segInfo = iter.next();
+                Segment segment = segInfo.getSegment();
+                PravegaInputSplit split = new PravegaInputSplit(segment, 0, segInfo.getLength());
                 splits.add(split);
-		    }
-			*/
-		}
-		return splits;
+            }
+        }
+        return splits;
     }
 
     @Override

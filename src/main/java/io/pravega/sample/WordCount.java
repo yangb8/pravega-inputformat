@@ -35,29 +35,30 @@ import io.pravega.client.stream.impl.JavaSerializer;
 import io.pravega.client.stream.impl.ByteArraySerializer;
 
 public class WordCount {
-	
-	public static void main(String[] args) throws Exception {
-		Configuration conf = new Configuration();
-	    conf.setStrings(PravegaInputFormat.SCOPE_NAME, "myScope");
-	    conf.setStrings(PravegaInputFormat.STREAM_NAME, "myStream");
-	    conf.setStrings(PravegaInputFormat.URI_STRING, "tcp://127.0.0.1:9090");
-		//conf.setStrings(PravegaInputFormat.DESERIALIZER, JavaSerializer.class.getName());
-		//conf.setStrings(PravegaInputFormat.DESERIALIZER, ByteArraySerializer.class.getName());
+    
+    public static void main(String[] args) throws Exception {
+        Configuration conf = new Configuration();
+        conf.setStrings(PravegaInputFormat.SCOPE_NAME, "myScope");
+        conf.setStrings(PravegaInputFormat.STREAM_NAME, "myStream");
+        conf.setStrings(PravegaInputFormat.URI_STRING, "tcp://127.0.0.1:9090");
+        conf.setBoolean(PravegaInputFormat.DEBUG, true);
+        //conf.setStrings(PravegaInputFormat.DESERIALIZER, JavaSerializer.class.getName());
+        //conf.setStrings(PravegaInputFormat.DESERIALIZER, ByteArraySerializer.class.getName());
 
         Job job = new Job(conf);
-		job.setJarByClass(WordCount.class);
-		job.setJobName("WordCount");
+        job.setJarByClass(WordCount.class);
+        job.setJobName("WordCount");
 
-		job.setInputFormatClass(PravegaInputFormat.class);
-		
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(IntWritable.class);
-		
+        job.setInputFormatClass(PravegaInputFormat.class);
+        
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        
         job.setMapperClass(TokenizerMapper.class);
         job.setReducerClass(SumReducer.class);
 
-		FileOutputFormat.setOutputPath(job, new Path("/tmp/wc/"));
+        FileOutputFormat.setOutputPath(job, new Path("/tmp/wc/"));
 
-		System.exit(job.waitForCompletion(true)?0:1);
-	}
+        System.exit(job.waitForCompletion(true)?0:1);
+    }
 }
