@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.pravega.hadoop;
+package io.pravega.hadoop.mapreduce;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
@@ -71,12 +71,12 @@ public class PravegaInputSplit extends InputSplit implements Writable {
 
     @Override
     public long getLength() throws IOException, InterruptedException {
-        return endOffset-startOffset;
+        return endOffset - startOffset;
     }
 
     @Override
     public String[] getLocations() throws IOException, InterruptedException {
-        return new String[] {};
+        return new String[]{};
     }
 
     @Override

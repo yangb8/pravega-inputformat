@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.pravega.hadoop;
+package io.pravega.hadoop.mapreduce;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.*;
@@ -38,11 +38,11 @@ import java.util.List;
 
 public class PravegaInputFormat<V extends Serializable> extends InputFormat<MetadataWritable, V> {
 
-    public static final String SCOPE_NAME  = "pravega.scope";
+    public static final String SCOPE_NAME = "pravega.scope";
     public static final String STREAM_NAME = "pravega.stream";
-    public static final String URI_STRING  = "pravega.uri";
-    public static final String DESERIALIZER= "pravega.deserializer";
-    public static final String DEBUG       = "pravega.debug";
+    public static final String URI_STRING = "pravega.uri";
+    public static final String DESERIALIZER = "pravega.deserializer";
+    public static final String DEBUG = "pravega.debug";
 
     @Override
     public List<InputSplit> getSplits(JobContext context) throws IOException, InterruptedException {

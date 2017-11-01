@@ -33,6 +33,11 @@ Usage
 Run Sample
 ---
 
-mvn exec:java -Dexec.mainClass=io.pravega.sample.WordCount
+(tested with hadoop 2.8.1)
+
+```
+# rm -rf /tmp/wc/
+HADOOP_CLASSPATH=target/hadoop-common-0.0.1.jar HADOOP_USER_CLASSPATH_FIRST=true hadoop jar target/hadoop-common-0.0.1.jar io.pravega.examples.hadoop.WordCount
+```
 
 (Input is read from pravega, and output is written to /tmp/wc/)

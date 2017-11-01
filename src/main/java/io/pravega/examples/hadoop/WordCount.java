@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.pravega.sample;
+package io.pravega.examples.hadoop;
 
 import java.io.IOException;
 import java.util.StringTokenizer;
@@ -29,13 +29,15 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import io.pravega.hadoop.PravegaInputFormat;
+import org.apache.hadoop.mapreduce.MRJobConfig;
+
+import io.pravega.hadoop.mapreduce.PravegaInputFormat;
 
 import io.pravega.client.stream.impl.JavaSerializer;
 import io.pravega.client.stream.impl.ByteArraySerializer;
 
 public class WordCount {
-    
+
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         conf.setStrings(PravegaInputFormat.SCOPE_NAME, "myScope");
@@ -44,21 +46,24 @@ public class WordCount {
         conf.setBoolean(PravegaInputFormat.DEBUG, true);
         //conf.setStrings(PravegaInputFormat.DESERIALIZER, JavaSerializer.class.getName());
         //conf.setStrings(PravegaInputFormat.DESERIALIZER, ByteArraySerializer.class.getName());
+        conf.setBoolean(MRJobConfig.MAPREDUCE_JOB_USER_CLASSPATH_FIRST, true);
+        conf.set("mapreduce.job.user.classpath.first", "true");
+        conf.set("mapreduce.task.classpath.user.precedence", "true");
 
         Job job = new Job(conf);
         job.setJarByClass(WordCount.class);
         job.setJobName("WordCount");
 
         job.setInputFormatClass(PravegaInputFormat.class);
-        
+
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
-        
+
         job.setMapperClass(TokenizerMapper.class);
         job.setReducerClass(SumReducer.class);
 
         FileOutputFormat.setOutputPath(job, new Path("/tmp/wc/"));
 
-        System.exit(job.waitForCompletion(true)?0:1);
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
 }

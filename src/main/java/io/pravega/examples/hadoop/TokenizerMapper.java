@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.pravega.sample;
+package io.pravega.examples.hadoop;
 
 import java.io.IOException;
 import java.util.StringTokenizer;
@@ -36,11 +36,11 @@ public class TokenizerMapper extends Mapper<Object, String, Text, IntWritable> {
 
     @Override
     protected void map(Object key, String value, Context context)
-    //protected void map(Object key, Students value, Context context)
-    //protected void map(Object key, byte[] value, Context context)
+        //protected void map(Object key, Students value, Context context)
+        //protected void map(Object key, byte[] value, Context context)
             throws IOException, InterruptedException {
 
-        System.out.println("####: "+value);
+        System.out.println("####: " + value);
         StringTokenizer tokenizer = new StringTokenizer(value.toString());
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();

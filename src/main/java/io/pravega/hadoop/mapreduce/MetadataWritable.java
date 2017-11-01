@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.pravega.hadoop;
+package io.pravega.hadoop.mapreduce;
 
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableUtils;
@@ -76,7 +76,9 @@ public class MetadataWritable implements Writable {
         WritableUtils.writeVLong(out, getTimestamp());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void readFields(DataInput in) throws IOException {
         split = new PravegaInputSplit();
@@ -85,7 +87,9 @@ public class MetadataWritable implements Writable {
         timestamp = WritableUtils.readVLong(in);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return String.format("%s:%s:%s", split.toString(), String.valueOf(getOffset()), Long.toString(getTimestamp()));

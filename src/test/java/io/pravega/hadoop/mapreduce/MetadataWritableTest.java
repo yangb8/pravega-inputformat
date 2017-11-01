@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.pravega.hadoop;
+package io.pravega.hadoop.mapreduce;
 
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableUtils;

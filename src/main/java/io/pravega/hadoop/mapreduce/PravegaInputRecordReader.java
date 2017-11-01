@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.pravega.hadoop;
+package io.pravega.hadoop.mapreduce;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.InputSplit;
@@ -64,7 +64,7 @@ public class PravegaInputRecordReader<V> extends RecordReader<MetadataWritable, 
         if (deserializerClassName == null) {
             deserializer = new JavaSerializer();
         } else {
-            try{
+            try {
                 Class<?> clazz = Class.forName(deserializerClassName);
                 deserializer = (Serializer<V>) clazz.newInstance();
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
@@ -101,7 +101,7 @@ public class PravegaInputRecordReader<V> extends RecordReader<MetadataWritable, 
     @Override
     public float getProgress() throws IOException, InterruptedException {
         if (key != null && split.getLength() > 0) {
-            return ((float)(key.getOffset() - split.getStartOffset()))/split.getLength();
+            return ((float) (key.getOffset() - split.getStartOffset())) / split.getLength();
         }
         return 0;
     }
