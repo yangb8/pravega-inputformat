@@ -78,8 +78,8 @@ public class PravegaInputRecordReader<V> extends RecordReader<MetadataWritable, 
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
         if (iterator.hasNext()) {
-            value = iterator.next();
             key = new MetadataWritable(split, iterator.getOffset());
+            value = iterator.next();
             if (debug) {
                 System.out.format("Key: %s, Value: %s (%s) %n", key, value, value.getClass().getName());
             }

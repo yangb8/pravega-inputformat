@@ -29,8 +29,6 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import org.apache.hadoop.mapreduce.MRJobConfig;
-
 import io.pravega.hadoop.mapreduce.PravegaInputFormat;
 
 import io.pravega.client.stream.impl.JavaSerializer;
@@ -46,9 +44,6 @@ public class WordCount {
         conf.setBoolean(PravegaInputFormat.DEBUG, true);
         //conf.setStrings(PravegaInputFormat.DESERIALIZER, JavaSerializer.class.getName());
         //conf.setStrings(PravegaInputFormat.DESERIALIZER, ByteArraySerializer.class.getName());
-        conf.setBoolean(MRJobConfig.MAPREDUCE_JOB_USER_CLASSPATH_FIRST, true);
-        conf.set("mapreduce.job.user.classpath.first", "true");
-        conf.set("mapreduce.task.classpath.user.precedence", "true");
 
         Job job = new Job(conf);
         job.setJarByClass(WordCount.class);
