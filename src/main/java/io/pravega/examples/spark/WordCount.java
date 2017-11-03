@@ -1,6 +1,4 @@
 /*
- * Copyright 2017 Dell/EMC
- *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -17,36 +15,33 @@
  * limitations under the License.
  */
 
-package io.pravega.examples.hadoop;
+package io.pravega.examples.spark;
 
+import io.pravega.hadoop.mapreduce.MetadataWritable;
 import io.pravega.hadoop.mapreduce.PravegaInputFormat;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
-import org.apache.hadoop.util.Tool;
-import org.apache.hadoop.util.ToolRunner;
+import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import scala.Tuple2;
 
-public class WordCount extends Configured implements Tool {
+import java.util.Arrays;
+import java.util.regex.Pattern;
+
+
+public final class WordCount {
+    private static final Pattern SPACE = Pattern.compile(" ");
 
     public static void main(String[] args) throws Exception {
-        int res = ToolRunner.run(new Configuration(), new WordCount(), args);
-        System.exit(res);
-    }
 
-    @Override
-    public int run(String[] args) throws Exception {
-
-        Configuration conf = this.getConf();
+        Configuration conf = new Configuration();
         GenericOptionsParser optionParser = new GenericOptionsParser(conf, args);
         String[] remainingArgs = optionParser.getRemainingArgs();
 
-        if (remainingArgs.length != 4) {
-            System.err.println("Usage: WordCount <url> <scope> <stream> <out>");
+        if (remainingArgs.length != 3) {
+            System.err.println("Usage: WordCount <url> <scope> <stream>");
             System.exit(2);
         }
 
@@ -55,19 +50,17 @@ public class WordCount extends Configured implements Tool {
         conf.setStrings(PravegaInputFormat.STREAM_NAME, remainingArgs[2]);
         conf.setBoolean(PravegaInputFormat.DEBUG, true);
 
-        Job job = Job.getInstance(conf, "WordCount");
-        job.setJarByClass(WordCount.class);
+        JavaSparkContext sc = new JavaSparkContext(new SparkConf());
 
-        job.setInputFormatClass(PravegaInputFormat.class);
+        JavaPairRDD<MetadataWritable, String> lines = sc.newAPIHadoopRDD(conf, PravegaInputFormat.class, MetadataWritable.class, String.class);
+        JavaRDD<String> words = lines.map(x -> x._2).flatMap(s -> Arrays.asList(SPACE.split(s)).iterator());
+        JavaPairRDD<String, Integer> ones = words.mapToPair(s -> new Tuple2<>(s, 1));
+        JavaPairRDD<String, Integer> counts = ones.reduceByKey((i1, i2) -> i1 + i2);
 
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
-
-        job.setMapperClass(TokenizerMapper.class);
-        job.setReducerClass(SumReducer.class);
-
-        FileOutputFormat.setOutputPath(job, new Path(remainingArgs[3]));
-
-        return job.waitForCompletion(true) ? 0 : 1;
+		/*
+         * TODO: comment out now, because there is jar version conflict for netty-all
+		 *	prevega client uses io.netty:netty-all:4.1.15.Final, but spark uses io.netty:netty-all:4.0.x.Final
+		*/
+        //System.out.println(counts.collect());
     }
 }

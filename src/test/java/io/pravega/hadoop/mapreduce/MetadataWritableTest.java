@@ -19,22 +19,12 @@
 
 package io.pravega.hadoop.mapreduce;
 
-import org.apache.hadoop.io.Writable;
-import org.apache.hadoop.io.WritableUtils;
-
 import io.pravega.client.segment.impl.Segment;
-
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Assert;
+
+import java.io.*;
 
 public class MetadataWritableTest {
 

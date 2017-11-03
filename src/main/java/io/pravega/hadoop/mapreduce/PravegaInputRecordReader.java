@@ -19,22 +19,18 @@
 
 package io.pravega.hadoop.mapreduce;
 
+import io.pravega.client.ClientFactory;
+import io.pravega.client.batch.BatchClient;
+import io.pravega.client.batch.SegmentIterator;
+import io.pravega.client.stream.Serializer;
+import io.pravega.client.stream.impl.JavaSerializer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
-import io.pravega.client.ClientFactory;
-import io.pravega.client.batch.BatchClient;
-import io.pravega.client.batch.SegmentIterator;
-import io.pravega.client.segment.impl.Segment;
-import io.pravega.client.stream.Serializer;
-import io.pravega.client.stream.impl.JavaSerializer;
-
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URI;
-import java.util.Iterator;
 
 
 public class PravegaInputRecordReader<V> extends RecordReader<MetadataWritable, V> {

@@ -20,6 +20,7 @@
 package io.pravega.hadoop.mapreduce.utils;
 
 import io.pravega.client.stream.Serializer;
+
 import java.nio.ByteBuffer;
 
 public final class IntegerSerializer implements Serializer<Integer> {

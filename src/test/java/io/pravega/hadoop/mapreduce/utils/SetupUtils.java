@@ -19,14 +19,14 @@
 
 package io.pravega.hadoop.mapreduce.utils;
 
+import com.google.common.base.Preconditions;
 import io.pravega.client.ClientFactory;
 import io.pravega.client.admin.StreamManager;
-import io.pravega.local.InProcPravegaCluster;
 import io.pravega.client.stream.EventStreamWriter;
 import io.pravega.client.stream.EventWriterConfig;
 import io.pravega.client.stream.ScalingPolicy;
 import io.pravega.client.stream.StreamConfiguration;
-import com.google.common.base.Preconditions;
+import io.pravega.local.InProcPravegaCluster;
 import lombok.Cleanup;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 import javax.annotation.concurrent.NotThreadSafe;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.apache.commons.lang3.RandomStringUtils;
 
 /**
  * Utility functions for creating the test setup.
@@ -42,12 +41,10 @@ import org.apache.commons.lang3.RandomStringUtils;
 @Slf4j
 @NotThreadSafe
 public final class SetupUtils {
-    // The pravega cluster.
-    private InProcPravegaCluster inProcPravegaCluster = null;
-
     // Manage the state of the class.
     private final AtomicBoolean started = new AtomicBoolean(false);
-
+    // The pravega cluster.
+    private InProcPravegaCluster inProcPravegaCluster = null;
     // The test Scope name.
     @Getter
     private String scope;
@@ -58,7 +55,7 @@ public final class SetupUtils {
      * @throws Exception on any errors.
      */
     public void startAllServices(String scope) throws Exception {
-		this.scope = scope;
+        this.scope = scope;
         if (!this.started.compareAndSet(false, true)) {
             log.warn("Services already started, not attempting to start again");
             return;
@@ -116,9 +113,8 @@ public final class SetupUtils {
     /**
      * Create the test stream.
      *
-     * @param streamName     Name of the test stream.
-     * @param numSegments    Number of segments to be created for this stream.
-     *
+     * @param streamName  Name of the test stream.
+     * @param numSegments Number of segments to be created for this stream.
      * @throws Exception on any errors.
      */
     public void createTestStream(final String streamName, final int numSegments)
@@ -139,11 +135,10 @@ public final class SetupUtils {
         log.info("Created stream: " + streamName);
     }
 
-	/**
+    /**
      * Create a stream writer for writing Integer events.
      *
-     * @param streamName    Name of the test stream.
-     *
+     * @param streamName Name of the test stream.
      * @return Stream writer instance.
      */
     public EventStreamWriter<Integer> getIntegerWriter(final String streamName) {

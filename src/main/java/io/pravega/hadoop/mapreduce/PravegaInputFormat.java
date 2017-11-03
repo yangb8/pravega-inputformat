@@ -19,20 +19,18 @@
 
 package io.pravega.hadoop.mapreduce;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.mapreduce.*;
-
 import io.pravega.client.ClientFactory;
 import io.pravega.client.batch.BatchClient;
 import io.pravega.client.batch.SegmentInfo;
 import io.pravega.client.segment.impl.Segment;
 import io.pravega.client.stream.impl.StreamImpl;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.mapreduce.*;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 

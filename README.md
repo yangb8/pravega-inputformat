@@ -1,18 +1,32 @@
 Description
 -----------
 
-Implementation of PravegaInputFormat (with wordcount sample)
+Implementation of PravegaInputFormat (with wordcount examples)
 
 
-Compile
+Build
 -------
 
-mvn clean install
+### Building Pravega
+
+Optional: This step is required only if you want to use a different version of Pravega than is published to maven central.
+
+Install the Pravega client libraries to your local Maven repository:
+```
+$ git clone https://github.com/pravega/pravega.git
+$./gradlew install
+```
+
+### Building PravegaInputFormat
+```
+mvn clean install -DskipTests
+```
 
 Test
 -------
-
+```
 mvn test 
+```
 
 Usage
 -----
@@ -24,20 +38,24 @@ Usage
 
         // optional
         conf.setBoolean(PravegaInputFormat.DEBUG, true);
+        // optional, depending on Value class
         conf.setStrings(PravegaInputFormat.DESERIALIZER, JavaSerializer.class.getName());
 
         Job job = new Job(conf);
         job.setInputFormatClass(PravegaInputFormat.class);
 ```
 
-Run Sample
+Run Examples
 ---
 
-(tested with hadoop 2.8.1)
+```
+Hadoop (2.8.1)
+
+HADOOP_CLASSPATH=target/hadoop-common-0.0.1.jar HADOOP_USER_CLASSPATH_FIRST=true hadoop jar target/hadoop-common-0.0.1.jar io.pravega.examples.hadoop.WordCount tcp://192.168.0.200:9090 myScope myStream /tmp/wordcount_output
+```
 
 ```
-# rm -rf /tmp/wc/
-HADOOP_CLASSPATH=target/hadoop-common-0.0.1.jar HADOOP_USER_CLASSPATH_FIRST=true hadoop jar target/hadoop-common-0.0.1.jar io.pravega.examples.hadoop.WordCount
-```
+Spark (2.2.0, commented collect() due to jar version conflict, TODO)
 
-(Input is read from pravega, and output is written to /tmp/wc/)
+spark-submit --conf spark.driver.userClassPathFirst=true --class io.pravega.examples.spark.WordCount target/hadoop-common-0.0.1.jar tcp://192.168.0.200:9090 myScope myStream
+```
