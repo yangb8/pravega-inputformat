@@ -57,10 +57,6 @@ public final class WordCount {
         JavaPairRDD<String, Integer> ones = words.mapToPair(s -> new Tuple2<>(s, 1));
         JavaPairRDD<String, Integer> counts = ones.reduceByKey((i1, i2) -> i1 + i2);
 
-		/*
-         * TODO: comment out now, because there is jar version conflict for netty-all
-		 *	prevega client uses io.netty:netty-all:4.1.15.Final, but spark uses io.netty:netty-all:4.0.x.Final
-		*/
-        //System.out.println(counts.collect());
+        System.out.println(counts.collect());
     }
 }

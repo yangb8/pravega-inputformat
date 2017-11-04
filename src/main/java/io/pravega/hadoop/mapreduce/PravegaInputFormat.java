@@ -28,13 +28,12 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.*;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PravegaInputFormat<V extends Serializable> extends InputFormat<MetadataWritable, V> {
+public class PravegaInputFormat<V> extends InputFormat<MetadataWritable, V> {
 
     public static final String SCOPE_NAME = "pravega.scope";
     public static final String STREAM_NAME = "pravega.stream";

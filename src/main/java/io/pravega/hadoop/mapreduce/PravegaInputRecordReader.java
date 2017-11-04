@@ -28,6 +28,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -35,6 +37,7 @@ import java.net.URI;
 
 public class PravegaInputRecordReader<V> extends RecordReader<MetadataWritable, V> {
 
+    private static final Logger log = LoggerFactory.getLogger(PravegaInputRecordReader.class);
     private ClientFactory clientFactory;
     private BatchClient batchClient;
     private PravegaInputSplit split;
@@ -77,7 +80,7 @@ public class PravegaInputRecordReader<V> extends RecordReader<MetadataWritable, 
             key = new MetadataWritable(split, iterator.getOffset());
             value = iterator.next();
             if (debug) {
-                System.out.format("Key: %s, Value: %s (%s) %n", key, value, value.getClass().getName());
+                log.info("Key: {}, Value: {} ({})", key, value, value.getClass().getName());
             }
             return true;
         }
@@ -104,6 +107,11 @@ public class PravegaInputRecordReader<V> extends RecordReader<MetadataWritable, 
 
     @Override
     public void close() throws IOException {
-        clientFactory.close();
+        if (iterator != null) {
+            iterator.close();
+        }
+        if (clientFactory != null) {
+            clientFactory.close();
+        }
     }
 }
